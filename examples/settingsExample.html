@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>LSR Image Previewer - Settings Example</title>
+	<meta name="description" content="Web previewer for Apple's Layer Source Representation (LSR) Image format.">
+	<meta name="author" content="Jeremiah Alexander (@jeremiahAlex)">
+	<meta name="keywords" content="LSR, Layer Source Representation, Previewer, Viewer, TVOS, AppleTV">
+</head>
+
+<body style="margin: 0 auto;">
+	<div class="lsr-img" width="100%" data-image-src="../img/gmTest2.lsr" data-rounded="true" data-shadows="true" data-zoom="false" data-animate="false" data-responsive="true" style="text-align: center;" >
+	</div>
+	<script type="text/javascript" src="../js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="../js/zip.js"></script>
+	<script type="text/javascript" src="../js/lsr-img.js"></script>
+	<script type="text/javascript">
+		LSR_IMG.setHighlightImage("../img/lsr-colored-highlight.png");
+		LSR_IMG.setScriptFolder("../js/");
+	</script>
+</body>
+</html>
+
+
