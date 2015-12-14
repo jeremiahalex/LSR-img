@@ -9,6 +9,14 @@
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
     <title>LSR IMG JS</title>
+    
+	<script type="text/javascript" src="javascripts/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="javascripts/zip.js"></script>
+	<script type="text/javascript" src="javascripts/lsr-img.js"></script>
+    <script type="text/javascript">
+		LSR_IMG.setHighlightImage("images/lsr-highlight.png");
+		LSR_IMG.setScriptFolder("javascripts/");
+	</script>
   </head>
 
   <body>
@@ -34,6 +42,11 @@
         <h1>
 <a id="lsr-img-js" class="anchor" href="#lsr-img-js" aria-hidden="true"><span class="octicon octicon-link"></span></a>LSR IMG JS</h1>
 
+
+<div class="lsr-img" width="100%" data-image-src="images/gmtest1.lsr" style="text-align: center;" >
+	<img src="images/lsr-placeholder.jpg" class="lsr-placeholder" style="padding: 50px;" />
+</div>
+							
 <p>(work in progress) Web previewer for Apple's Layer Source Representation (LSR) Image format.
 Made by Jeremiah Alexander <a href="http://twitter.com/jeremiahalex">@jeremiahalex</a></p>
 
@@ -47,9 +60,11 @@ Made by Jeremiah Alexander <a href="http://twitter.com/jeremiahalex">@jeremiahal
 
 </li>
 <li>Create a div, and specify the LSR file in the data-image-src attribute. 
-<div width="100%">
-    <img src="img/lsr-placeholder.jpg">
-</div>
+<pre><code>
+&lt;div class="lsr-img" width="100%" data-image-src="img/gmTest1.lsr" style="text-align: center;" >
+	&lt;img src="img/lsr-placeholder.jpg" class="lsr-placeholder" style="padding: 50px;" />
+&lt;/div>
+</code></pre>
 </li>
 <li>Optionally create a placeholder, by including an image with class <strong>lsr-placeholder</strong> inside the div. Placeholders images should be either the <a href="https://developer.apple.com/tvos/human-interface-guidelines/icons-and-images/">focussed or unfocussed size</a> of your LSR Image for best results.</li>
 </ol>
@@ -58,11 +73,19 @@ Made by Jeremiah Alexander <a href="http://twitter.com/jeremiahalex">@jeremiahal
 <a id="specifying-file-locations" class="anchor" href="#specifying-file-locations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Specifying File Locations</h3>
 
 <p>If your web page is in a sub folder or you want the place the scripts of highlight image elsewhere then you'll need to the the script about this, like so...
-   </p>
-
+</p>
+<pre><code>
+&lt;script type="text/javascript">
+	LSR_IMG.setHighlightImage("../img/lsr-colored-highlight.png");
+	LSR_IMG.setScriptFolder("../js/");
+&lt;/script>
+</co</code></pre>
 <h2>
 <a id="settings" class="anchor" href="#settings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Settings</h2>
 
+<div class="lsr-img" width="100%" data-image-src="images/lsrtest.lsr" data-responsive="true" data-animate="true" style="text-align: center;" >
+</div>
+	
 <p>You can currently customise your LSR image display, using the following data-attributes on your div.</p>
 
 <h3>
