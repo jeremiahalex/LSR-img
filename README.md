@@ -5,8 +5,8 @@ lsr-img.js
 
 Made by Jeremiah Alexander [@JeremiahAlex][1]
 
-[http://jeremiahalex.github.com][2] for examples and documentation.
+[https://jeremiahalex.github.io/LSR-img/][2] for examples and documentation.
 
 
   [1]: http://twitter.com/jeremiahalex
-  [2]: http://jeremiahalex.github.com
+  [2]: https://jeremiahalex.github.io/LSR-img/
