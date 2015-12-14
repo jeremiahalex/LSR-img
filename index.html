@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="LSR IMG JS : Web previewer for Apple&#39;s Layer Source Representation (LSR) Image format.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>LSR IMG JS</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/jeremiahalex/LSR-img">View on GitHub</a>
+
+          <h1 id="project_title">LSR IMG JS</h1>
+          <h2 id="project_tagline">Web previewer for Apple&#39;s Layer Source Representation (LSR) Image format.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/jeremiahalex/LSR-img/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/jeremiahalex/LSR-img/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="lsr-img-js" class="anchor" href="#lsr-img-js" aria-hidden="true"><span class="octicon octicon-link"></span></a>LSR IMG JS</h1>
+
+<p>(work in progress) Web previewer for Apple's Layer Source Representation (LSR) Image format.
+Made by Jeremiah Alexander <a href="http://twitter.com/jeremiahalex">@jeremiahalex</a></p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<ol>
+<li>copy the <strong>/js</strong> and <strong>/img</strong> folders to your website route (you only need to keep the ls-highlight.png image)</li>
+<li>Include the script files in your html
+
+
+</li>
+<li>Create a div, and specify the LSR file in the data-image-src attribute. 
+<div width="100%">
+    <img src="img/lsr-placeholder.jpg">
+</div>
+</li>
+<li>Optionally create a placeholder, by including an image with class <strong>lsr-placeholder</strong> inside the div. Placeholders images should be either the <a href="https://developer.apple.com/tvos/human-interface-guidelines/icons-and-images/">focussed or unfocussed size</a> of your LSR Image for best results.</li>
+</ol>
+
+<h3>
+<a id="specifying-file-locations" class="anchor" href="#specifying-file-locations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Specifying File Locations</h3>
+
+<p>If your web page is in a sub folder or you want the place the scripts of highlight image elsewhere then you'll need to the the script about this, like so...
+   </p>
+
+<h2>
+<a id="settings" class="anchor" href="#settings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Settings</h2>
+
+<p>You can currently customise your LSR image display, using the following data-attributes on your div.</p>
+
+<h3>
+<a id="data-rounded" class="anchor" href="#data-rounded" aria-hidden="true"><span class="octicon octicon-link"></span></a>data-rounded</h3>
+
+<p>true/false to use rounded corners like Apple TV does. Default is false.</p>
+
+<h3>
+<a id="data-shadows" class="anchor" href="#data-shadows" aria-hidden="true"><span class="octicon octicon-link"></span></a>data-shadows</h3>
+
+<p>true/false whether drop shadows should be added. Default is true.</p>
+
+<h3>
+<a id="data-zoom" class="anchor" href="#data-zoom" aria-hidden="true"><span class="octicon octicon-link"></span></a>data-zoom</h3>
+
+<p>true/false whether an image should zoom in &amp; out as it gains focus. Default is true.</p>
+
+<h3>
+<a id="data-animate" class="anchor" href="#data-animate" aria-hidden="true"><span class="octicon octicon-link"></span></a>data-animate</h3>
+
+<p>true/false whether the image should just display on an animated loop. Default is false.</p>
+
+<h3>
+<a id="data-responsive" class="anchor" href="#data-responsive" aria-hidden="true"><span class="octicon octicon-link"></span></a>data-responsive</h3>
+
+<p>true/false whether the image should scale to the size of the containing div. Default is false.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">LSR IMG JS maintained by <a href="https://github.com/jeremiahalex">jeremiahalex</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
