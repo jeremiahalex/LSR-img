@@ -1,0 +1,26 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false,
+        "loose": false
+      }
+    ]
+  ],
+  "plugins": [
+    "external-helpers"
+  ],
+  "env": {
+    "lib:es": {
+      "plugins": [
+        [
+          "import-static-files",
+          {
+            "baseDir": "lib/static"
+          }
+        ]
+      ]
+    }
+  }
+}

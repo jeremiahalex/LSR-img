@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>LSR Image Web Previewer</title>
+    <meta name="description" content="Web previewer for Apple's Layer Source Representation (LSR) Image format.">
+    <meta name="author" content="Jeremiah Alexander (@jeremiahAlex)">
+    <meta name="keywords" content="LSR, Layer Source Representation, Previewer, Viewer, TVOS, AppleTV">
+</head>
+
+<body style="margin: 100px auto;">
+    <div class="lsr-img"
+         data-image-src="../img/gmtest1.lsr"
+         data-responsive="true"
+         data-animate="false"
+         data-shadows="true"
+         style="text-align: center; width: 500px; height: 500px">
+        <img src="../img/lsr-placeholder.jpg" class="lsr-placeholder" style="padding: 50px;"/>
+    </div>
+    <script src="../../../node_modules/jszip/dist/jszip.min.js"></script>
+    <script src="../../../dist/lsr-image.js"></script>
+    <script>
+        LSRImg.LSRImg();
+    </script>
+    <!--<script type="module">-->
+        <!--import { LSRImg } from 'LSRImg';-->
+        <!--console.log(LSRImg());-->
+    <!--</script>-->
+</body>
+</html>
