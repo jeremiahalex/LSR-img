@@ -12,6 +12,10 @@
     "image",
     "Layer Source Representation"
   ],
+  "files": [
+    "dist",
+    "lib"
+  ],
   "scripts": {
     "clean": "rimraf dist lib",
     "build:es": "NODE_ENV=es rollup -c",
