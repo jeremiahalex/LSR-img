@@ -31,7 +31,7 @@ function isTrue (value) {
 export function LSRImg (loadOnDemand = false) {
 
   let lsrImages = [];
-  let lsrImgElementIds = [];
+  let lsrImgElements = [];
   let lsrHighlightImagePath = null;
   let focussedLsrCanvas = null;
   let lsrHighlightImage = highlightImage;
@@ -56,61 +56,61 @@ export function LSRImg (loadOnDemand = false) {
   /*------------------------------
     Initialize -
   ------------------------------*/
+  // create a highlight image
+  if (lsrHighlightImagePath !== null) {
+    lsrHighlightImage = new Image();
+    lsrHighlightImage.src = lsrHighlightImagePath;
+  }
+
+  // check if device rotation is supported
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener('orientationchange', lsrOrientationChange, false);
+    window.addEventListener('deviceorientation', lsrOrientationUpdate, false);
+  }
+
+  // catch resize events but not too often
+  window.onresize = function () {
+    if (lsrResizeTimer) {
+      clearTimeout(lsrResizeTimer);
+    }
+    lsrResizeTimer = setTimeout(resizeLSRCanvases, 500);
+  };
+
   if (!loadOnDemand) {
     document.onreadystatechange = function () {
       if (document.readyState === 'complete') {
         let lsrImgElements = document.getElementsByClassName('lsr-img');
-        initialize(lsrImgElements);
-      }
-    };
-  }
-
-  function initialize (lsrImgElements) {
-    for (let lsrImgElement of lsrImgElements) {
-      loadLSRFile(lsrImgElement);
-    }
-
-    // create a highlight image
-    if (lsrHighlightImagePath !== null) {
-      lsrHighlightImage = new Image();
-      lsrHighlightImage.src = lsrHighlightImagePath;
-    }
-
-    // check if device rotation is supported
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener('orientationchange', lsrOrientationChange, false);
-      window.addEventListener('deviceorientation', lsrOrientationUpdate, false);
-    }
-
-    // catch resize events but not too often
-    window.onresize = function () {
-      if (lsrResizeTimer) {
-        clearTimeout(lsrResizeTimer);
-      }
-      lsrResizeTimer = setTimeout(resizeLSRCanvases, 500);
-    };
-  }
-
-  function registryElementById (id) {
-    lsrImgElementIds.push(id);
-  }
-
-  function load () {
-    if (loadOnDemand) {
-      if (lsrImgElementIds.length > 0) {
-        let elements = [];
-        for (let id of lsrImgElementIds) {
-          let lsrElement = document.getElementById(id);
-          if (lsrElement !== null) {
-            elements.push(lsrElement);
-          } else {
-            console.log('LSR-img: the element ' + id + ' was not found.');
-          }
+        for (let lsrImgElement of lsrImgElements) {
+          loadLSRFile(lsrImgElement);
         }
-        initialize(elements);
-      } else {
-        console.log('LSR-img: it can not be load because there are not registered elements.');
       }
+    };
+  }
+
+  function load (elementOrId) {
+    if (loadOnDemand) {
+      console.log('==== lsr ====');
+      console.log(elementOrId);
+      if (typeof elementOrId === 'string') {
+        let lsrElement = document.getElementById(elementOrId);
+        if (lsrElement == null) {
+          elementOrId = lsrElement;
+        } else {
+          console.log('LSR-img: the element ' + elementOrId + ' was not found.');
+          return;
+        }
+      }
+
+      if (lsrImgElements.indexOf(elementOrId) !== -1) {
+        lsrImgElements.push(elementOrId);
+      }
+      else {
+        removeLsrImage(elementOrId);
+      }
+
+      loadLSRFile(elementOrId);
+    } else {
+      console.log('LSR-img: load on demand is disable.');
     }
   }
 
@@ -661,15 +661,19 @@ export function LSRImg (loadOnDemand = false) {
     }
   }
 
+  function removeLsrImage (element) {
+    lsrImages.splice(
+      lsrImages.findIndex(lsrImage => { lsrImage.canvas.parentElement === element; }),
+      1
+    );
+  }
+
   return {
     setHighlightImage: function (imgPath) {
       lsrHighlightImagePath = imgPath;
     },
-    registryElementById: function (id) {
-      registryElementById(id);
-    },
-    load: function () {
-      load();
+    load: function (elementOrId) {
+      load(elementOrId);
     },
     version: version,
   };
