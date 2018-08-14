@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "clean": "rimraf dist lib",
-    "build:es": "NODE_ENV=es rollup -c",
+    "build:es": "NODE_ENV=esm rollup -c",
     "build:umd": "NODE_ENV=umd rollup -c",
     "build:lib:es": "BABEL_ENV=lib:es babel src -d lib",
     "build": "run-s clean && run-p build:es build:umd build:lib:es",

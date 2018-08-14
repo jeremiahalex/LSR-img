@@ -11,12 +11,13 @@ const env = process.env.NODE_ENV;
 export default {
   input: 'src/lsr-img.js',
   output: {
+    name: 'LSRImg',
     file: {
-      es: module,
+      esm: module,
       umd: main,
     }[env],
     format: env,
-    name: 'LSRImg',
+    sourcemap: true,
     globals: {
       jszip: 'JSZip'
     }

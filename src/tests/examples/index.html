@@ -10,22 +10,20 @@
 </head>
 
 <body style="margin: 100px auto;">
-    <div class="lsr-img"
-         data-image-src="../img/gmtest1.lsr"
+    <div id="lsrid"
+         class="lsr-img"
+         data-image-src="../img/o_pequeno_mundo_de_dante.lsr"
          data-responsive="true"
          data-animate="false"
          data-shadows="true"
-         style="text-align: center; width: 500px; height: 500px">
+         style="text-align: center; width: 1000px; height: 1000px; border: 1px solid red;">
         <img src="../img/lsr-placeholder.jpg" class="lsr-placeholder" style="padding: 50px;"/>
     </div>
     <script src="../../../node_modules/jszip/dist/jszip.min.js"></script>
-    <script src="../../../dist/lsr-image.js"></script>
+    <script src="../../../dist/lsr-img.js"></script>
     <script>
-        LSRImg.LSRImg();
+        var handler = LSRImg.LSRImg(true);
+        handler.load('lsrid');
     </script>
-    <!--<script type="module">-->
-        <!--import { LSRImg } from 'LSRImg';-->
-        <!--console.log(LSRImg());-->
-    <!--</script>-->
 </body>
 </html>
