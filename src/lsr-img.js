@@ -89,23 +89,21 @@ export function LSRImg (loadOnDemand = false) {
 
   function load (elementOrId) {
     if (loadOnDemand) {
-      console.log('==== lsr ====');
-      console.log(elementOrId);
       if (typeof elementOrId === 'string') {
         let lsrElement = document.getElementById(elementOrId);
-        if (lsrElement == null) {
+        if (lsrElement !== null) {
           elementOrId = lsrElement;
         } else {
-          console.log('LSR-img: the element ' + elementOrId + ' was not found.');
+          console.log('LSR-img: the element identified with ID: ' + elementOrId + ', was not found.');
           return;
         }
       }
 
       if (lsrImgElements.indexOf(elementOrId) !== -1) {
-        lsrImgElements.push(elementOrId);
+        removeLsrImage(elementOrId);
       }
       else {
-        removeLsrImage(elementOrId);
+        lsrImgElements.push(elementOrId);
       }
 
       loadLSRFile(elementOrId);
@@ -662,10 +660,11 @@ export function LSRImg (loadOnDemand = false) {
   }
 
   function removeLsrImage (element) {
-    lsrImages.splice(
-      lsrImages.findIndex(lsrImage => { lsrImage.canvas.parentElement === element; }),
-      1
-    );
+    let index = lsrImages.findIndex(lsrImage => { return lsrImage.canvas.parentElement === element; });
+    if (index !== -1) {
+      element.removeChild(lsrImages[index].canvas);
+      lsrImages.splice(index, 1);
+    }
   }
 
   return {
