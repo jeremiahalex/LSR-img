@@ -28,9 +28,10 @@ function isTrue (value) {
   return !falsy.test(value) && !!value;
 }
 
-export function LSRImg () {
+export function LSRImg (loadOnDemand = false) {
 
   let lsrImages = [];
+  let lsrImgElementIds = [];
   let lsrHighlightImagePath = null;
   let focussedLsrCanvas = null;
   let lsrHighlightImage = highlightImage;
@@ -55,34 +56,63 @@ export function LSRImg () {
   /*------------------------------
     Initialize -
   ------------------------------*/
-  document.onreadystatechange = function () {
-    if (document.readyState === 'complete') {
-      let lsrImgElements = document.getElementsByClassName('lsr-img');
-      for (let lsrImgElement of lsrImgElements) {
-        loadLSRFile(lsrImgElement);
+  if (!loadOnDemand) {
+    document.onreadystatechange = function () {
+      if (document.readyState === 'complete') {
+        let lsrImgElements = document.getElementsByClassName('lsr-img');
+        initialize(lsrImgElements);
       }
+    };
+  }
 
-      // create a highlight image
-      if (lsrHighlightImagePath !== null) {
-        lsrHighlightImage = new Image();
-        lsrHighlightImage.src = lsrHighlightImagePath;
-      }
-
-      // check if device rotation is supported
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener('orientationchange', lsrOrientationChange, false);
-        window.addEventListener('deviceorientation', lsrOrientationUpdate, false);
-      }
-
-      // catch resize events but not too often
-      window.onresize = function () {
-        if (lsrResizeTimer) {
-          clearTimeout(lsrResizeTimer);
-        }
-        lsrResizeTimer = setTimeout(resizeLSRCanvases, 500);
-      };
+  function initialize (lsrImgElements) {
+    for (let lsrImgElement of lsrImgElements) {
+      loadLSRFile(lsrImgElement);
     }
-  };
+
+    // create a highlight image
+    if (lsrHighlightImagePath !== null) {
+      lsrHighlightImage = new Image();
+      lsrHighlightImage.src = lsrHighlightImagePath;
+    }
+
+    // check if device rotation is supported
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('orientationchange', lsrOrientationChange, false);
+      window.addEventListener('deviceorientation', lsrOrientationUpdate, false);
+    }
+
+    // catch resize events but not too often
+    window.onresize = function () {
+      if (lsrResizeTimer) {
+        clearTimeout(lsrResizeTimer);
+      }
+      lsrResizeTimer = setTimeout(resizeLSRCanvases, 500);
+    };
+  }
+
+  function registryElementById (id) {
+    lsrImgElementIds.push(id);
+  }
+
+  function load () {
+    if (loadOnDemand) {
+      if (lsrImgElementIds.length > 0) {
+        let elements = [];
+        for (let id of lsrImgElementIds) {
+          let lsrElement = document.getElementById(id);
+          if (lsrElement !== null) {
+            elements.push(lsrElement);
+          } else {
+            console.log('LSR-img: the element ' + id + ' was not found.');
+          }
+        }
+        initialize(elements);
+      } else {
+        console.log('LSR-img: it can not be load because there are not registered elements.');
+      }
+    }
+  }
 
   function resizeLSRCanvases () {
     for (let i = 0; i < lsrImages.length; i++) {
@@ -634,6 +664,12 @@ export function LSRImg () {
   return {
     setHighlightImage: function (imgPath) {
       lsrHighlightImagePath = imgPath;
+    },
+    registryElementById: function (id) {
+      registryElementById(id);
+    },
+    load: function () {
+      load();
     },
     version: version,
   };
