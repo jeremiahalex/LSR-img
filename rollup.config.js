@@ -11,7 +11,7 @@ const env = process.env.NODE_ENV;
 export default {
   input: 'src/lsr-img.js',
   output: {
-    name: 'LSRImg',
+    name: 'lsrimg',
     file: {
       esm: module,
       umd: main,

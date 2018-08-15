@@ -4,8 +4,7 @@
  * 
  * Web previewer for Apple's Layer Source Representation (LSR) Image format. 
  * Requires
- * - Jquery
- * - zip.js (inc. worker.js, inflator.js)
+ * - JSZip
  * 
  * ===========================================================
  * Copyright 2015 Jeremiah Alexander (@JeremiahAlex)

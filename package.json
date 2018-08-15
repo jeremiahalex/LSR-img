@@ -5,10 +5,15 @@
   "main": "dist/lsr-img.js",
   "module": "dist/lsr-img.es.js",
   "repository": "git@github.com:Movile/LSR-img.git",
-  "author": "Carlos E. Alfaro M. <carlos.morales@playkids.com>",
+  "homepage": "https://github.com/Movile/LSR-img",
+  "bugs": "https://github.com/Movile/LSR-img/issues",
+  "author": "Jeremiah Alexander (@JeremiahAlex)",
+  "contributors": [
+    "Carlos E. Alfaro M. <carlos.morales@playkids.com>"
+  ],
   "license": "MIT",
   "keywords": [
-    "lsr",
+    "LSR",
     "image",
     "Layer Source Representation"
   ],
