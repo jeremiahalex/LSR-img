@@ -1,7 +1,5 @@
 .project
 .idea
-dist
-lib
 node_modules
 LSR-img.iml
 .DS_Store
