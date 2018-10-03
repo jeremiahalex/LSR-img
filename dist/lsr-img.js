@@ -13,11 +13,11 @@
   /* ===========================================================
    * lsr-img.js v0.1
    * http://jeremiahalex.github.com
-   * 
-   * Web previewer for Apple's Layer Source Representation (LSR) Image format. 
+   *
+   * Web previewer for Apple's Layer Source Representation (LSR) Image format.
    * Requires
    * - JSZip
-   * 
+   *
    * ===========================================================
    * Copyright 2015 Jeremiah Alexander (@JeremiahAlex)
    *
@@ -34,6 +34,14 @@
 
   function isTrue(value) {
     return !falsy.test(value) && !!value;
+  }
+
+  function getWidth(element) {
+    return element.getBoundingClientRect().width > 0 ? element.getBoundingClientRect().width : parseInt(window.getComputedStyle(element).width);
+  }
+
+  function getHeight(element) {
+    return element.getBoundingClientRect().height > 0 ? element.getBoundingClientRect().height : parseInt(window.getComputedStyle(element).height);
   }
 
   function LSRImg() {
@@ -62,6 +70,9 @@
         x: 'beta', y: 'gamma', z: 'alpha'
       }
     };
+    var onloadCallback = emptyOnload;
+
+    function emptyOnload() {}
 
     /*------------------------------
       Initialize -
@@ -154,8 +165,8 @@
       var ratio = lsrImage.canvasSize.width / lsrImage.canvasSize.height;
 
       //we scale the css, so we don't need to redo the canvas content
-      lsrImage.canvas.style.width = lsrImage.canvas.parentElement.getBoundingClientRect().width + 'px';
-      lsrImage.canvas.style.height = lsrImage.canvas.parentElement.getBoundingClientRect().width / ratio + 'px';
+      lsrImage.canvas.style.width = getWidth(lsrImage.canvas.parentElement) + 'px';
+      lsrImage.canvas.style.height = getWidth(lsrImage.canvas.parentElement) / ratio + 'px';
     }
 
     /*------------------------------
@@ -202,6 +213,7 @@
 
             //display the image
             displayLSRImage(lsrImage, element);
+            onloadCallback();
           });
         }
       };
@@ -290,8 +302,8 @@
     function displayLSRImage(lsrImage, element) {
       lsrImage.canvasResizeRatio = 1.0;
       if (lsrImage.responsive) {
-        var wRatio = lsrImage.properties.canvasSize.width / element.getBoundingClientRect().width;
-        var hRatio = lsrImage.properties.canvasSize.height / element.getBoundingClientRect().height;
+        var wRatio = lsrImage.properties.canvasSize.width / getWidth(element);
+        var hRatio = lsrImage.properties.canvasSize.height / getHeight(element);
         lsrImage.canvasResizeRatio = wRatio > hRatio ? wRatio : hRatio;
       }
 
@@ -706,6 +718,13 @@
       },
       load: function load(elementOrId) {
         _load(elementOrId);
+      },
+      onload: function onload(callback) {
+        if (callback !== null && callback !== undefined) {
+          onloadCallback = callback;
+        } else {
+          onloadCallback = emptyOnload;
+        }
       },
       version: version
     };

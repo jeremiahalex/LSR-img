@@ -1,11 +1,11 @@
 /* ===========================================================
  * lsr-img.js v0.1
  * http://jeremiahalex.github.com
- * 
- * Web previewer for Apple's Layer Source Representation (LSR) Image format. 
+ *
+ * Web previewer for Apple's Layer Source Representation (LSR) Image format.
  * Requires
  * - JSZip
- * 
+ *
  * ===========================================================
  * Copyright 2015 Jeremiah Alexander (@JeremiahAlex)
  *
@@ -25,6 +25,18 @@ let falsy = /^(?:f(?:alse)?|no?|0+)$/i;
 
 function isTrue (value) {
   return !falsy.test(value) && !!value;
+}
+
+function getWidth (element) {
+  return element.getBoundingClientRect().width > 0 ?
+    element.getBoundingClientRect().width :
+    parseInt(window.getComputedStyle(element).width);
+}
+
+function getHeight (element) {
+  return element.getBoundingClientRect().height > 0 ?
+    element.getBoundingClientRect().height :
+    parseInt(window.getComputedStyle(element).height);
 }
 
 export function LSRImg (loadOnDemand = false) {
@@ -51,6 +63,10 @@ export function LSRImg (loadOnDemand = false) {
       x: 'beta', y: 'gamma', z: 'alpha',
     },
   };
+  let onloadCallback = emptyOnload;
+
+  function emptyOnload () {}
+
 
   /*------------------------------
     Initialize -
@@ -125,8 +141,8 @@ export function LSRImg (loadOnDemand = false) {
     let ratio = lsrImage.canvasSize.width / lsrImage.canvasSize.height;
 
     //we scale the css, so we don't need to redo the canvas content
-    lsrImage.canvas.style.width = lsrImage.canvas.parentElement.getBoundingClientRect().width + 'px';
-    lsrImage.canvas.style.height = (lsrImage.canvas.parentElement.getBoundingClientRect().width / ratio) + 'px';
+    lsrImage.canvas.style.width = getWidth(lsrImage.canvas.parentElement) + 'px';
+    lsrImage.canvas.style.height = (getWidth(lsrImage.canvas.parentElement) / ratio) + 'px';
   }
 
   /*------------------------------
@@ -178,6 +194,7 @@ export function LSRImg (loadOnDemand = false) {
 
           //display the image
           displayLSRImage(lsrImage, element);
+          onloadCallback();
         });
       }
     };
@@ -263,8 +280,8 @@ export function LSRImg (loadOnDemand = false) {
   function displayLSRImage (lsrImage, element) {
     lsrImage.canvasResizeRatio = 1.0;
     if (lsrImage.responsive) {
-      let wRatio = lsrImage.properties.canvasSize.width / element.getBoundingClientRect().width;
-      let hRatio = lsrImage.properties.canvasSize.height / element.getBoundingClientRect().height;
+      let wRatio = lsrImage.properties.canvasSize.width / getWidth(element);
+      let hRatio = lsrImage.properties.canvasSize.height / getHeight(element);
       lsrImage.canvasResizeRatio = wRatio > hRatio ? wRatio : hRatio;
     }
 
@@ -666,12 +683,20 @@ export function LSRImg (loadOnDemand = false) {
     }
   }
 
+
   return {
     setHighlightImage: function (imgPath) {
       lsrHighlightImagePath = imgPath;
     },
     load: function (elementOrId) {
       load(elementOrId);
+    },
+    onload: function (callback) {
+      if (callback !== null && callback !== undefined) {
+        onloadCallback = callback;
+      } else {
+        onloadCallback = emptyOnload;
+      }
     },
     version: version,
   };
