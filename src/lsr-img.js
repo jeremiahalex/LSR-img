@@ -20,6 +20,7 @@
 import { version } from '../package.json';
 import JSZip from 'jszip';
 import highlightImage from './statics/lsr-highlight.png';
+import damagedImage from './statics/broken_file.svg';
 
 let falsy = /^(?:f(?:alse)?|no?|0+)$/i;
 
@@ -64,8 +65,10 @@ export function LSRImg (loadOnDemand = false) {
     },
   };
   let onloadCallback = emptyOnload;
+  let onerrorCallback = emptyOnerror;
 
   function emptyOnload () {}
+  function emptyOnerror () {}
 
 
   /*------------------------------
@@ -109,8 +112,7 @@ export function LSRImg (loadOnDemand = false) {
         if (lsrElement !== null) {
           elementOrId = lsrElement;
         } else {
-          console.log('LSR-img: the element identified with ID: ' + elementOrId + ', was not found.');
-          return;
+          throw `LSR-img: the element identified with ID: ${elementOrId}, was not found.`;
         }
       }
 
@@ -149,128 +151,135 @@ export function LSRImg (loadOnDemand = false) {
     File Loading -
   ------------------------------*/
   function loadLSRFile (element) {
-    //grab the lsr-image name from the div
-    let dataAttribute = element.dataset.imageSrc;
-    if (dataAttribute === null) {
-      console.log('LSR-img: data-image-src attribute not found on lsr-img classed object');
-      return;
-    }
-    let filename = String(dataAttribute);
+    try {
+      //grab the lsr-image name from the div
+      let dataAttribute = element.dataset.imageSrc;
+      if (dataAttribute !== null) {
+        let filename = String(dataAttribute);
 
-    //if the filename isn't absolute then, then take the window's location for the relative path
-    if (filename.indexOf('http') === -1) {
-      let filePath = String(window.location);
-      filePath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
-      filename = filePath + filename;
-    }
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', filename, true);
-    xhr.responseType = 'blob';
-    xhr.onload = function () {
-      if (this.status === 200) {
-        let fileBlob = new Blob([this.response], {type: 'application/zip'});
-        unzipLSRFile(fileBlob, function (lsrImage) {
-          //obtain the settings for this image
-          dataAttribute = element.dataset.rounded;
-          if (typeof dataAttribute === 'undefined') lsrImage.roundedCorners = false; else lsrImage.roundedCorners =
-            isTrue(dataAttribute);
-          //shadows
-          dataAttribute = element.dataset.shadows;
-          if (typeof dataAttribute === 'undefined') lsrImage.drawShadows = true; else lsrImage.drawShadows =
-            isTrue(dataAttribute);
-          //animate
-          dataAttribute = element.dataset.animate;
-          if (typeof dataAttribute === 'undefined') lsrImage.animate = false; else lsrImage.animate =
-            isTrue(dataAttribute);
-          //focussed
-          dataAttribute = element.dataset.zoom;
-          if (typeof dataAttribute === 'undefined') lsrImage.zoomEnabled = true; else lsrImage.zoomEnabled =
-            isTrue(dataAttribute);
-          //responsive
-          dataAttribute = element.dataset.responsive;
-          if (typeof dataAttribute === 'undefined') lsrImage.responsive = false; else lsrImage.responsive =
-            isTrue(dataAttribute);
-
-          //display the image
-          displayLSRImage(lsrImage, element);
-          onloadCallback();
-        });
-      }
-    };
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status !== 200) {
-          console.log('LSR-img: The following LSR file could not be loaded: ' + filename);
+        //if the filename isn't absolute then, take the window's location for the relative path
+        if (filename.indexOf('http') === -1) {
+          let filePath = String(window.location);
+          filePath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
+          filename = filePath + filename;
         }
-      }
-    };
 
-    xhr.send();
-  }
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', filename, true);
+        xhr.responseType = 'blob';
+        xhr.onload = function () {
+          if (this.status === 200) {
+            let fileBlob = new Blob([this.response], {type: 'application/zip'});
+            unzipLSRFile(fileBlob)
+              .then((lsrImage) => {
+                //obtain the settings for this image
+                dataAttribute = element.dataset.rounded;
+                if (typeof dataAttribute === 'undefined') lsrImage.roundedCorners =
+                  false; else lsrImage.roundedCorners =
+                  isTrue(dataAttribute);
+                //shadows
+                dataAttribute = element.dataset.shadows;
+                if (typeof dataAttribute === 'undefined') lsrImage.drawShadows = true; else lsrImage.drawShadows =
+                  isTrue(dataAttribute);
+                //animate
+                dataAttribute = element.dataset.animate;
+                if (typeof dataAttribute === 'undefined') lsrImage.animate = false; else lsrImage.animate =
+                  isTrue(dataAttribute);
+                //focussed
+                dataAttribute = element.dataset.zoom;
+                if (typeof dataAttribute === 'undefined') lsrImage.zoomEnabled = true; else lsrImage.zoomEnabled =
+                  isTrue(dataAttribute);
+                //responsive
+                dataAttribute = element.dataset.responsive;
+                if (typeof dataAttribute === 'undefined') lsrImage.responsive = false; else lsrImage.responsive =
+                  isTrue(dataAttribute);
 
-  function unzipLSRFile (blob, successCallback) {
-    JSZip.loadAsync(blob).then(function (zip) {
-      //find out the lsr file content
-      zip.file('Contents.json').async('string').then(function success (content) {
-        let lsrImage = JSON.parse(content);
-        lsrImages.push(lsrImage);
-        lsrImage.layersLoading = lsrImage.layers.length;
-        for (let i = 0; i < lsrImage.layers.length; i++) {
-          openLSRLayer(lsrImage.layers[i], zip, function (success) {
-            lsrImage.layersLoading--;
-            if (!success)
-              console.log('LSR-img: One or more errors attempting to load lsr layer: ' + lsrImage.layers[i].filename);
-
-            if (lsrImage.layersLoading === 0) {
-              successCallback(lsrImage);
+                //display the image
+                displayLSRImage(lsrImage, element);
+                onloadCallback();
+              })
+              .catch(error => {
+                drawDamagedImage(element);
+                onerrorCallback(error);
+              });
+          }
+        };
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status !== 200) {
+              drawDamagedImage(element);
+              onerrorCallback(new Error(`LSR-img: The following LSR file could not be loaded: ${filename}`));
             }
-          });
-        }
-      }, function error () {
-        console.log('LSR-Img: Failed to get Content.json');
-      });
-    }, function (message) {
-      console.log('LSR-img: Failed to unzip the LSR file: ' + message);
-    });
-  }
+          }
+        };
 
-  function openLSRLayer (lsrImageLayer, zip, successCallback) {
-    zip.file(lsrImageLayer.filename + '/Contents.json').async('string').then(function (content) {
-      let json = JSON.parse(content);
-      lsrImageLayer.info = json.info;
-      lsrImageLayer.properties = json.properties;
-      openLSRImageSet(lsrImageLayer, zip, successCallback);
-    });
-  }
-
-  function openLSRImageSet (lsrImageLayer, zip, successCallback) {
-    let entryName = lsrImageLayer.filename + '/Content.imageset/Contents.json';
-    zip.file(entryName).async('string').then(function (content) {
-      let json = JSON.parse(content);
-      lsrImageLayer.images = json.images;
-      //currently only one image set available
-      if (lsrImageLayer.images.length > 0) {
-        openImage(lsrImageLayer.images[0],
-          lsrImageLayer.filename + '/Content.imageset/' + lsrImageLayer.images[0].filename, zip, successCallback);
+        xhr.send();
       } else {
-        console.log('LSR-img: No Images specified in the layer: ' + entryName);
-        successCallback(false);
+        drawDamagedImage(element);
+        onerrorCallback(new Error('LSR-img: data-image-src attribute not found on lsr-img classed object'));
       }
-    });
+    } catch (error) {
+      drawDamagedImage(element);
+      onerrorCallback(error);
+    }
   }
 
-  function openImage (lsrLayerImage, entryName, zip, successCallback) {
+  function unzipLSRFile (blob) {
+    return JSZip.loadAsync(blob)
+      .then((zip) => {
+        //find out the lsr file content
+        return zip.file('Contents.json').async('string')
+          .then((content) => {
+            let lsrImage = JSON.parse(content);
+            let openImages = new Array(lsrImage.layers.length);
+            for (let i = 0; i < lsrImage.layers.length; i++) {
+              openImages[i] = openLSRLayer(lsrImage.layers[i], zip);
+            }
+            return Promise.all(openImages)
+              .then(() => {
+                lsrImages.push(lsrImage);
+                return Promise.resolve(lsrImage);
+              });
+          });
+      });
+  }
+
+  function openLSRLayer (lsrImageLayer, zip) {
+    return zip.file(lsrImageLayer.filename + '/Contents.json').async('string')
+      .then((content) => {
+        let json = JSON.parse(content);
+        lsrImageLayer.info = json.info;
+        lsrImageLayer.properties = json.properties;
+        return openLSRImageSet(lsrImageLayer, zip);
+      });
+  }
+
+  function openLSRImageSet (lsrImageLayer, zip) {
+    let entryName = lsrImageLayer.filename + '/Content.imageset/Contents.json';
+    return zip.file(entryName).async('string')
+      .then((content) => {
+        let json = JSON.parse(content);
+        lsrImageLayer.images = json.images;
+        //currently only one image set available
+        if (lsrImageLayer.images.length > 0) {
+          return openImage(lsrImageLayer.images[0],
+            lsrImageLayer.filename + '/Content.imageset/' + lsrImageLayer.images[0].filename, zip);
+        } else {
+          return Promise.reject(new Error(`LSR-img: No Images specified in the layer: ${entryName}`));
+        }
+      });
+  }
+
+  function openImage (lsrLayerImage, entryName, zip) {
     let ext = entryName.substr(entryName.lastIndexOf('.') + 1);
     if (ext.match(/(jpg|jpeg|png|gif)$/)) {
       let mimeType = 'image/' + ext;
-      zip.file(entryName).async('base64').then(function (content) {
-        lsrLayerImage.fileData = 'data:' + mimeType + ';base64,' + content;
-        successCallback(true);
-      });
+      return zip.file(entryName).async('base64')
+        .then((content) => {
+          lsrLayerImage.fileData = 'data:' + mimeType + ';base64,' + content;
+        });
     } else {
-      console.log('LSR-img: Layered Image had an unsupported File Type: ' + entryName);
-      successCallback(false);
+      return Promise.reject(new Error(`LSR-img: Layered Image had an unsupported File Type: ${entryName}`));
     }
   }
 
@@ -683,6 +692,16 @@ export function LSRImg (loadOnDemand = false) {
     }
   }
 
+  function drawDamagedImage (element) {
+    damagedImage.style.width = '100%';
+    damagedImage.style.height = 'auto';
+    damagedImage.alt = 'Damaged LSR Image';
+    damagedImage.title = 'Damaged LSR Image';
+    element.appendChild(damagedImage);
+    for (let placeholder of element.getElementsByClassName('lsr-placeholder')) {
+      placeholder.style.display = 'none';
+    }
+  }
 
   return {
     setHighlightImage: function (imgPath) {
@@ -696,6 +715,13 @@ export function LSRImg (loadOnDemand = false) {
         onloadCallback = callback;
       } else {
         onloadCallback = emptyOnload;
+      }
+    },
+    onerror: function (callback) {
+      if (callback !== null && callback !== undefined) {
+        onerrorCallback = callback;
+      } else {
+        onerrorCallback = emptyOnerror();
       }
     },
     version: version,
