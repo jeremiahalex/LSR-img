@@ -1,6 +1,6 @@
 {
   "name": "lsr-img",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "Web previewer for Apple's Layer Source Representation (LSR) Image format.",
   "main": "dist/lsr-img.js",
   "module": "dist/lsr-img.es.js",

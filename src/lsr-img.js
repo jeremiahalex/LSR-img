@@ -20,7 +20,7 @@
 import { version } from '../package.json';
 import JSZip from 'jszip';
 import highlightImage from './statics/lsr-highlight.png';
-import damagedImage from './statics/broken_file.svg';
+import damagedImageSrc from './statics/broken_file.svg';
 
 let falsy = /^(?:f(?:alse)?|no?|0+)$/i;
 
@@ -693,6 +693,7 @@ export function LSRImg (loadOnDemand = false) {
   }
 
   function drawDamagedImage (element) {
+    let damagedImage = damagedImageSrc.cloneNode(true);
     damagedImage.style.width = '100%';
     damagedImage.style.height = 'auto';
     damagedImage.alt = 'Damaged LSR Image';
