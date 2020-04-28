@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>LSR Image Previewer - Animation Example</title>
+	<meta name="description" content="Web previewer for Apple's Layer Source Representation (LSR) Image format.">
+	<meta name="author" content="Jeremiah Alexander (@jeremiahAlex)">
+	<meta name="keywords" content="LSR, Layer Source Representation, Previewer, Viewer, TVOS, AppleTV">
+</head>
+
+<body style="margin: 0 auto;">
+<div id="lsrid"
+	 class="lsr-img"
+	 data-image-src="../img/gmTest2.lsr"
+	 data-animate="true"
+	 style="text-align: center; border: 1px solid red;" >
+	<img src="../img/lsr-placeholder.jpg" class="lsr-placeholder" style="padding: 50px;"/>
+</div>
+<script src="../../../node_modules/jszip/dist/jszip.min.js"></script>
+<script src="../../../dist/lsr-img.js"></script>
+<script>
+	var handler = lsrimg.LSRImg(true);
+	handler.load('lsrid');
+</script>
+</body>
+</html>
+
+

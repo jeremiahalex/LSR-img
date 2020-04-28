@@ -1,1 +1,5 @@
 .project
+.idea
+node_modules
+LSR-img.iml
+.DS_Store
